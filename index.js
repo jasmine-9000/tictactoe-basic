@@ -16,9 +16,11 @@ class Board {
         // add game mechanic variables.
         this.turn = SquareTypes.X;
         this.winner = null;
-        // add show who's turn it is.
+        // add info to show who's turn it is
+        // add info to show who wins
         this.turnElement = document.querySelector('.turn .square');
         this.turnHeader = document.querySelector('.turn h1');
+
         this.turnElement.classList.add(SquareTypes.X);
         console.assert(this.rootElement !== null, "No root element present");
     }
@@ -38,7 +40,6 @@ class Board {
         }
     }
     #generateSquares() {
-        console.log("This is a private function");
         this.rawSquares = [];
         this.squares = [];
         // iterate through each of the board element's children as columns.
@@ -49,18 +50,9 @@ class Board {
             })
 
         })
-
-
-
-
     }
     #addResetListener() {
         this.resetElement?.addEventListener('click', () => {
-            this.reset();
-        })
-    }
-    #addTurnListener() {
-        this.turnElement?.addEventListener('click', () => {
             this.reset();
         })
     }
@@ -100,7 +92,9 @@ class Board {
         let column3 = [this.squares[6], this.squares[7], this.squares[8]];
         let row1 = [this.squares[0], this.squares[3], this.squares[6]];
         
-        //https://www.tutorialspoint.com/javascript-checking-if-all-the-elements-are-same-in-an-array
+        // did not write this code. 
+        // source;
+        // https://www.tutorialspoint.com/javascript-checking-if-all-the-elements-are-same-in-an-array
         const checkIfSame = (arr = []) => {
             const {length: l} = arr;
             if(l <= 1) return true;
@@ -108,14 +102,15 @@ class Board {
             return arr[0] === arr[l-1];
         }
 
-
+        // to check the win conditions:
         // first columns, then rows, then diagonals.
+
+        // check the rows.
         for(let i = 0; i < 9; i += 3) {
             let column = [this.squares[i], this.squares[i+1], this.squares[i+2]];
             let columnTypes = column.map((el) => el.type);
             if(checkIfSame(columnTypes) && columnTypes[0] !== SquareTypes.NOTHING) {
-                alert(`${this.getTurn().toUpperCase()} won by column!`)
-                this.winner = this.getTurn();
+                this.winnerdeclaration(this.getTurn(), 'column');
             }
 
         }
@@ -123,8 +118,7 @@ class Board {
             let row = [this.squares[j], this.squares[j+3], this.squares[j + 6]];
             let rowTypes = row.map(el => el.type);
             if(checkIfSame(rowTypes) && rowTypes[0] !== SquareTypes.NOTHING) {
-                alert(`${this.getTurn().toUpperCase()} won by row`)
-                this.winner = this.getTurn();
+                this.winnerdeclaration(this.getTurn(), 'row');
             }
 
         }
@@ -132,14 +126,10 @@ class Board {
         let diag1 = [this.squares[0], this.squares[4], this.squares[8]]
         let diag2 = [this.squares[2], this.squares[4], this.squares[6]]
         if(checkIfSame(diag1.map(el => el.type)) && diag1[0].type !== SquareTypes.NOTHING) {
-            alert(`${this.getTurn().toUpperCase()} won by diagonal`)
-            this.winner = this.getTurn();
-            this.winnerdeclaration();
+            this.winnerdeclaration(this.getTurn(), 'diagonal');
         }
         if(checkIfSame(diag2.map(el => el.type)) && diag2[0].type !== SquareTypes.NOTHING) {
-            alert(`${this.getTurn().toUpperCase()} won by diagonal`)
-            this.winner = this.getTurn();
-            this.winnerdeclaration();
+            this.winnerdeclaration(this.getTurn(), 'diagonal');
         }
         let drawCondition = true;
         for(let i = 0; i < 9; i += 3) {
@@ -154,17 +144,29 @@ class Board {
         }
     }
     reset() {
+        // Reset the board. 
         console.log("board reset");
+
+        // Reset each square to nothing.
         [...this.squares].forEach((square) => {
             square.reset();
         });
+        // New game has no winner
         this.winner = null;
+
+        // New game starts with X. X always goes first. 
         this.turn = SquareTypes.X;
         this.turnElement.classList.remove('o');
         this.turnElement.classList.add('x');
+        this.turnHeader.innerText = 'Turn: ';
+
         console.assert(this.rootElement !== null, "No root element present");
     }
-    winnerdeclaration() {
+    winnerdeclaration(winner=null, method='diagonal') {
+        console.log(winner);
+        alert(`${winner.toUpperCase()} won by ${method}!`)
+        this.winner = winner;
+
         console.log(this.turnElement);
         this.turnHeader.innerText = 'Winner: ';
         let winnerElement = this.turnElement;
