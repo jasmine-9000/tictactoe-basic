@@ -1,0 +1,88 @@
+:root {
+    --X-x-transform-size: 15px;
+    --X-y-transform-size: 40px;
+
+}
+
+
+.board {
+    width: 100%;
+    display: flex;
+
+}
+.row {
+    display: flex;
+    flex-direction:row;
+}
+.square {
+    width: 100px;
+    height: 100px;
+    background-color: white;
+    border: 1px solid black;
+}
+.square.x,
+.square.o {
+    position: relative;
+}
+.square.x::before,
+.square.x::after {
+    content: '';
+    width: 10px;
+    height: 75px;
+    background-color:black;
+    position: absolute;
+    z-index: 5;
+}
+.square.x::before {
+    transform:  translate(var(--X-y-transform-size), var(--X-x-transform-size)) rotate(-45deg); 
+}
+.square.x::after {
+    transform:  translate(var(--X-y-transform-size), var(--X-x-transform-size)) rotate(45deg);
+}
+
+.square.o::before {
+    content: '';
+    width: 50px;
+    height: 50px;
+    border-radius: 999px;
+    border-width: 10px;
+    border-color: black;
+    border-style:solid;
+    background-color: white;
+    transform: translate(15px, 15px);
+    position: absolute;
+    z-index: 5;
+}
+
+
+
+#reset {
+    margin-top: 10px;
+}
+
+
+@media screen and (max-width: 400px) {
+    .square {
+        width: 50px;
+        height: 50px;
+    }
+
+    .square.x::before,
+    .square.x::after {
+        width: 5px;
+        height: calc(75px / 2);
+    }
+    :root {
+        --X-x-transform-size: 8px;
+        --X-y-transform-size: 23px;
+    }
+    .square.o::before {
+        content: '';
+        width: 25px;
+        height: 25px;
+        border-width: 5px;
+        transform: translate(8px, 8px);
+    }
+
+
+}
