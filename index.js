@@ -18,6 +18,7 @@ class Board {
         this.winner = null;
         // add show who's turn it is.
         this.turnElement = document.querySelector('.turn .square');
+        this.turnHeader = document.querySelector('.turn h1');
         this.turnElement.classList.add(SquareTypes.X);
         console.assert(this.rootElement !== null, "No root element present");
     }
@@ -133,10 +134,12 @@ class Board {
         if(checkIfSame(diag1.map(el => el.type)) && diag1[0].type !== SquareTypes.NOTHING) {
             alert(`${this.getTurn().toUpperCase()} won by diagonal`)
             this.winner = this.getTurn();
+            this.winnerdeclaration();
         }
         if(checkIfSame(diag2.map(el => el.type)) && diag2[0].type !== SquareTypes.NOTHING) {
             alert(`${this.getTurn().toUpperCase()} won by diagonal`)
             this.winner = this.getTurn();
+            this.winnerdeclaration();
         }
         let drawCondition = true;
         for(let i = 0; i < 9; i += 3) {
@@ -157,7 +160,23 @@ class Board {
         });
         this.winner = null;
         this.turn = SquareTypes.X;
+        this.turnElement.classList.remove('o');
+        this.turnElement.classList.add('x');
         console.assert(this.rootElement !== null, "No root element present");
+    }
+    winnerdeclaration() {
+        console.log(this.turnElement);
+        this.turnHeader.innerText = 'Winner: ';
+        let winnerElement = this.turnElement;
+        if(winnerElement.classList.contains('x')) {
+            winnerElement.classList.remove('x');
+            winnerElement.classList.add('o');
+
+        } else {
+            winnerElement.classList.remove('o');
+            winnerElement.classList.add('x');
+
+        }
     }
 }
 
