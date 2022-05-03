@@ -1,7 +1,7 @@
 :root {
     --X-x-transform-size: 15px;
     --X-y-transform-size: 40px;
-
+    --hover-color: hsl(0, 1%, 46%);
 }
 
 
@@ -20,10 +20,49 @@
     background-color: white;
     border: 1px solid black;
 }
+
+/* when it's O's turn, hover the circle over any square without a x or o class the mouse is on. */
+.board[data-turn="o"] .square:not([class~='x']):not([class~='o']):hover::before {
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-width: 10px;
+    border-color: var(--hover-color);
+    border-style:solid;
+    border-radius: 999px;
+    background-color:transparent;
+    z-index: 999;
+    transform: translate(15px, 15px);
+}
+/* when it's Xs turn, hover the X over any square without a x or o class the mouse is on. */
+.board[data-turn="x"] .square:not([class~='x']):not([class~='o']):hover::before,
+.board[data-turn="x"] .square:not([class~='x']):not([class~='o']):hover::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 75px;
+    background-color: var(--hover-color);
+    z-index:5;
+}
+
+
+.board[data-turn="x"] .square:not([class~='x']):not([class~='o']):hover::before {
+    transform:  translate(var(--X-y-transform-size), var(--X-x-transform-size)) rotate(-45deg); 
+}
+.board[data-turn="x"] .square:not([class~='x']):not([class~='o']):hover::after {
+
+    transform:  translate(var(--X-y-transform-size), var(--X-x-transform-size)) rotate(45deg);
+}
+
+
+
 .square.x,
 .square.o {
     position: relative;
 }
+
+
 .square.x::before,
 .square.x::after {
     content: '';
@@ -33,13 +72,14 @@
     position: absolute;
     z-index: 5;
 }
-.square.x::before {
+.square.x::before{
     transform:  translate(var(--X-y-transform-size), var(--X-x-transform-size)) rotate(-45deg); 
 }
 .square.x::after {
     transform:  translate(var(--X-y-transform-size), var(--X-x-transform-size)) rotate(45deg);
 }
 
+/* Draw the circle within the 'o' class*/
 .square.o::before {
     content: '';
     width: 50px;

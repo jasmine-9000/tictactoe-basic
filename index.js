@@ -4,6 +4,7 @@ const SquareTypes = {
     NOTHING: 'nothing'
 }
 
+const debug = false;
 
 
 class Board {
@@ -34,11 +35,19 @@ class Board {
         if(this.turnElement.classList.contains('x')) {
             this.turnElement.classList.remove('x');
             this.turnElement.classList.add('o');
+            this.rootElement.dataset.turn = 'o';
         } else {
             this.turnElement.classList.remove('o');
             this.turnElement.classList.add('x');
+            this.rootElement.dataset.turn = 'x';
         }
     }
+    /* *****************************************************
+        PRIVATE METHODS
+    * ***************************************************** */
+    /* *****************************************************
+        GENERATE SQUARES FROM BOARD HTML ON INITIAL PAGE LOAD
+    * ***************************************************** */
     #generateSquares() {
         this.rawSquares = [];
         this.squares = [];
@@ -50,12 +59,17 @@ class Board {
             })
 
         })
+        //
+        console.assert(this.squares.length === 9, "Board does not have exactly 9 squares!")
     }
     #addResetListener() {
         this.resetElement?.addEventListener('click', () => {
             this.reset();
         })
     }
+    /* *****************************************************
+        DEBUGGING METHODS
+    ***************************************************** */
     callout() {
         console.log("Hello");
         console.log("I am a board.");
@@ -70,6 +84,9 @@ class Board {
             square.callout();
         } )
     }
+    /* *****************************************************
+        CHECK WIN CONDITION
+    ***************************************************** */
     checkwincondition() {
         console.assert(this.squares.length === 9, "Board does not have exactly 9 squares.")
 
@@ -86,14 +103,14 @@ class Board {
         // 2 5 8
         // 3 6 9
         // [1,2,3,4,5,6,7,8,9]
-
+        /*
         let column1 = [this.squares[0], this.squares[1], this.squares[2]];
         let column2 = [this.squares[3], this.squares[4], this.squares[5]];
         let column3 = [this.squares[6], this.squares[7], this.squares[8]];
         let row1 = [this.squares[0], this.squares[3], this.squares[6]];
-        
+        */
         // did not write this code. 
-        // source;
+        // source:
         // https://www.tutorialspoint.com/javascript-checking-if-all-the-elements-are-same-in-an-array
         const checkIfSame = (arr = []) => {
             const {length: l} = arr;
@@ -105,16 +122,17 @@ class Board {
         // to check the win conditions:
         // first columns, then rows, then diagonals.
 
-        // check the rows.
+        // check the columns.
         for(let i = 0; i < 9; i += 3) {
             let column = [this.squares[i], this.squares[i+1], this.squares[i+2]];
-            let columnTypes = column.map((el) => el.type);
+            let columnTypes = column.map(el => el.type); // grab the type of each square.
             if(checkIfSame(columnTypes) && columnTypes[0] !== SquareTypes.NOTHING) {
                 this.winnerdeclaration(this.getTurn(), 'column');
             }
 
         }
-        for (let j = 0; j < 3; j+=1){
+        // check the rows. 
+        for (let j = 0; j < 3; j += 1){
             let row = [this.squares[j], this.squares[j+3], this.squares[j + 6]];
             let rowTypes = row.map(el => el.type);
             if(checkIfSame(rowTypes) && rowTypes[0] !== SquareTypes.NOTHING) {
@@ -131,6 +149,9 @@ class Board {
         if(checkIfSame(diag2.map(el => el.type)) && diag2[0].type !== SquareTypes.NOTHING) {
             this.winnerdeclaration(this.getTurn(), 'diagonal');
         }
+
+        // draw condition:
+        // if the whole board is full, and the winner has not been declared yet
         let drawCondition = true;
         for(let i = 0; i < 9; i += 3) {
             let column = [this.squares[i], this.squares[i+1], this.squares[i+2]];
@@ -139,13 +160,17 @@ class Board {
                 drawCondition = false;
             }
         }
-        if(drawCondition) {
+        if(drawCondition && this.winner === null) {
             alert("draw");
         }
     }
+    /* *****************************************************
+        BOARD RESET
+    ***************************************************** */
     reset() {
-        // Reset the board. 
-        console.log("board reset");
+        if(debug) {
+            console.log("board reset");
+        }
 
         // Reset each square to nothing.
         [...this.squares].forEach((square) => {
@@ -162,13 +187,26 @@ class Board {
 
         console.assert(this.rootElement !== null, "No root element present");
     }
-    winnerdeclaration(winner=null, method='diagonal') {
-        console.log(winner);
-        alert(`${winner.toUpperCase()} won by ${method}!`)
-        this.winner = winner;
 
-        console.log(this.turnElement);
-        this.turnHeader.innerText = 'Winner: ';
+
+
+    /*********************************************************
+        DECLARE A WINNER
+    /*********************************************************/
+    winnerdeclaration(winner=null, method='diagonal') {
+        // announce it in the console
+        console.log(winner);
+
+        // announce it in the browser.
+        alert(`${winner.toUpperCase()} won by ${method}!`)
+        this.turnHeader.innerText = 'Winner: '; // change text from 'Turn: ' to 'Winner: '.
+        this.rootElement.dataset.turn = ' '; // let player know you can't place anymore tiles.
+
+        // announce it in the board class.
+        this.winner = winner; // this.winner is no longer null.
+        
+        // announce who the winner is in the browser.
+        // replace whose turn it is to who the winner is.
         let winnerElement = this.turnElement;
         if(winnerElement.classList.contains('x')) {
             winnerElement.classList.remove('x');
@@ -177,8 +215,15 @@ class Board {
         } else {
             winnerElement.classList.remove('o');
             winnerElement.classList.add('x');
-
         }
+
+
+        // debugging info
+        if(debug) {
+            console.log("Debugging information");
+            console.log(this.turnElement);
+            console.log("End debugging information");
+        }        
     }
 }
 
