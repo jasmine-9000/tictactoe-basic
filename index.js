@@ -185,6 +185,8 @@ class Board {
         this.turnElement.classList.add('x');
         this.turnHeader.innerText = 'Turn: ';
 
+        this.rootElement.dataset.turn = 'x';
+
         console.assert(this.rootElement !== null, "No root element present");
     }
 
